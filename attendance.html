@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance - FaceAttend</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                <i class="fa-solid fa-face-smile"></i>
+            </div>
+
+            <div>
+                <h2>FaceAttend</h2>
+                <span>Smart Attendance</span>
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <a href="/" class="nav-link">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/register" class="nav-link">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Register Student</span>
+            </a>
+
+            <a href="/attendance" class="nav-link active">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="/students" class="nav-link">
+                <i class="fa-solid fa-users"></i>
+                <span>Students</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                System Online
+
+            </div>
+
+            <div class="version">
+                FaceAttend v1.0
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>Attendance Records</h1>
+
+                <p>
+                    View and manage student attendance records.
+                </p>
+
+            </div>
+
+
+           
+
+        </header>
+
+
+        <!-- SUMMARY -->
+
+        <div class="attendance-stats">
+
+            <div class="attendance-stat">
+
+                <div class="stat-icon blue">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+
+                <div>
+                    <span>Total Records</span>
+                    <h2>{{ attendance|length }}</h2>
+                </div>
+
+            </div>
+
+
+            <div class="attendance-stat">
+
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+
+                <div>
+                    <span>Present</span>
+                    <h2>{{ attendance|length }}</h2>
+                </div>
+
+            </div>
+
+
+            <div class="attendance-stat">
+
+                <div class="stat-icon purple">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+
+                <div>
+                    <span>Latest Records</span>
+                    <h2>{{ attendance|length }}</h2>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABLE CARD -->
+
+        <div class="card attendance-table-card">
+
+            <div class="table-toolbar">
+
+                <div>
+
+                    <h2>Attendance History</h2>
+
+                    <p>
+                        All recorded attendance entries
+                    </p>
+
+                </div>
+
+
+                <form
+                    action="/attendance/date"
+                    method="GET"
+                    class="date-filter">
+
+                    <i class="fa-regular fa-calendar"></i>
+
+                    <input
+                        type="date"
+                        name="date"
+                        id="attendanceDate"
+                    >
+
+                    <button type="submit">
+                        Filter
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Student</th>
+
+                            <th>Student ID</th>
+
+                            <th>Date</th>
+
+                            <th>Time</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% if attendance %}
+
+                            {% for record in attendance %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="student-cell">
+
+                                        <div class="student-avatar">
+
+                                            {{ record[1][0]|upper }}
+
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                {{ record[1] }}
+                                            </strong>
+
+                                            <small>
+                                                Face Recognition
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="id-badge">
+                                        #{{ record[0] }}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+                                    {{ record[2] }}
+                                </td>
+
+
+                                <td>
+
+                                    <div class="time-cell">
+
+                                        <i class="fa-regular fa-clock"></i>
+
+                                        {{ record[3] }}
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="status present">
+
+                                        <i class="fa-solid fa-check"></i>
+
+                                        Present
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="5">
+
+                                    <div class="empty-state large">
+
+                                        <div class="empty-icon">
+
+                                            <i class="fa-solid fa-calendar-xmark"></i>
+
+                                        </div>
+
+                                        <h3>
+                                            No Attendance Records
+                                        </h3>
+
+                                        <p>
+                                            Attendance will appear here
+                                            after a student is recognized.
+                                        </p>
+
+                                        <a href="/" class="btn primary">
+
+                                            <i class="fa-solid fa-camera"></i>
+
+                                            Start Recognition
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const today = new Date();
+
+const yyyy = today.getFullYear();
+
+const mm = String(today.getMonth() + 1).padStart(2, "0");
+
+const dd = String(today.getDate()).padStart(2, "0");
+
+document.getElementById("attendanceDate").value =
+    `${yyyy}-${mm}-${dd}`;
+
+</script>
+
+</body>
+
+</html>

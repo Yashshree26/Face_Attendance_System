@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Face Attendance System</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fa-solid fa-face-smile"></i>
+            </div>
+
+            <div>
+                <h2>FaceAttend</h2>
+                <span>Smart Attendance</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <a href="/" class="nav-link active">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/register" class="nav-link">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Register Student</span>
+            </a>
+
+            <a href="/attendance" class="nav-link">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="/students" class="nav-link">
+                <i class="fa-solid fa-users"></i>
+                <span>Students</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                System Online
+            </div>
+
+            <div class="version">
+                FaceAttend v1.0
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Manage your smart face recognition attendance.</p>
+            </div>
+
+            <div class="top-actions">
+
+                <div class="date-box">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span id="currentDate"></span>
+                </div>
+
+                
+
+            </div>
+
+        </header>
+
+
+        <!-- STAT CARDS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div>
+                    <span>Total Students</span>
+                    <h2>{{ students|length }}</h2>
+                    <small>
+                        <i class="fa-solid fa-arrow-up"></i>
+                        Registered students
+                    </small>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+
+                <div>
+                    <span>Present Today</span>
+                    <h2>{{ present_count }}</h2>
+                    <small class="green-text">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Attendance marked
+                    </small>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    <i class="fa-solid fa-user-clock"></i>
+                </div>
+
+                <div>
+                    <span>Absent Today</span>
+                    <h2>{{ students|length - present_count }}</h2>
+                    <small class="orange-text">
+                        <i class="fa-solid fa-clock"></i>
+                        Waiting for attendance
+                    </small>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon purple">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div>
+                    <span>Attendance Rate</span>
+
+                    <h2>
+                        {% if students|length > 0 %}
+                            {{ ((present_count / students|length) * 100)|round|int }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </h2>
+
+                    <small>
+                        Today's percentage
+                    </small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN DASHBOARD -->
+        <section class="dashboard-grid">
+
+
+            <!-- CAMERA -->
+            <div class="card camera-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h2>Live Recognition</h2>
+                        <p>Use your camera to mark attendance automatically.</p>
+                    </div>
+
+                    <span class="live-badge">
+                        <span></span>
+                        LIVE
+                    </span>
+
+                </div>
+
+
+                <div class="camera-container">
+
+                    <img
+                        id="cameraFeed"
+                        src=""
+                        alt="Camera"
+                        class="camera-feed"
+                    >
+
+                    <div id="cameraPlaceholder" class="camera-placeholder">
+
+                        <div class="camera-icon">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+
+                        <h3>Camera Ready</h3>
+
+                        <p>
+                            Click "Start Recognition" to activate
+                            face recognition.
+                        </p>
+
+                    </div>
+
+                    <div class="scan-line"></div>
+
+                    <div class="face-corners">
+
+                        <span class="corner top-left"></span>
+                        <span class="corner top-right"></span>
+                        <span class="corner bottom-left"></span>
+                        <span class="corner bottom-right"></span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="camera-controls">
+
+                    <button
+                        class="btn primary"
+                        id="startCamera"
+                        onclick="startCamera()">
+
+                        <i class="fa-solid fa-video"></i>
+
+                        Start Recognition
+
+                    </button>
+
+
+                    <button
+                        class="btn danger"
+                        id="stopCamera"
+                        onclick="stopCamera()">
+
+                        <i class="fa-solid fa-stop"></i>
+
+                        Stop Camera
+
+                    </button>
+
+                </div>
+
+
+                <div class="recognition-status">
+
+                    <div class="status-indicator"></div>
+
+                    <div>
+
+                        <strong id="recognitionStatus">
+                            Camera is currently inactive
+                        </strong>
+
+                        <span>
+                            Face recognition engine
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- LATEST RECOGNITION -->
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h2>Latest Recognition</h2>
+                        <p>Recently recognized students.</p>
+                    </div>
+
+                    <i class="fa-solid fa-bolt header-icon"></i>
+
+                </div>
+
+
+                <div class="recognition-box">
+
+                    <div class="big-face-icon">
+
+                        <i class="fa-solid fa-user-check"></i>
+
+                    </div>
+
+                    <h3 id="recognizedName">
+                        Ready to recognize
+                    </h3>
+
+                    <p id="recognizedMessage">
+                        Start the camera to detect a student.
+                    </p>
+
+                    <div class="confidence">
+
+                        <span>Recognition Status</span>
+
+                        <div class="confidence-bar">
+                            <div id="confidenceProgress"></div>
+                        </div>
+
+                        <strong id="confidenceText">
+                            Waiting
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-actions">
+
+                    <a href="/register" class="quick-action">
+
+                        <div class="quick-icon blue">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+
+                        <div>
+                            <strong>Register Student</strong>
+                            <span>Add a new face</span>
+                        </div>
+
+                        <i class="fa-solid fa-chevron-right"></i>
+
+                    </a>
+
+
+                    <a href="/attendance" class="quick-action">
+
+                        <div class="quick-icon green">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+
+                        <div>
+                            <strong>View Attendance</strong>
+                            <span>Check today's records</span>
+                        </div>
+
+                        <i class="fa-solid fa-chevron-right"></i>
+
+                    </a>
+
+
+                    <a href="/students" class="quick-action">
+
+                        <div class="quick-icon purple">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div>
+                            <strong>Students</strong>
+                            <span>Manage students</span>
+                        </div>
+
+                        <i class="fa-solid fa-chevron-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ATTENDANCE TABLE -->
+        <section class="card attendance-card">
+
+            <div class="card-header">
+
+                <div>
+                    <h2>Today's Attendance</h2>
+                    <p>Students marked present today.</p>
+                </div>
+
+                <a href="/attendance" class="view-all">
+                    View All
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Student</th>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% if attendance %}
+
+                            {% for record in attendance %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="student-cell">
+
+                                        <div class="student-avatar">
+                                            {{ record[1][0] }}
+                                        </div>
+
+                                        <strong>
+                                            {{ record[1] }}
+                                        </strong>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    #{{ record[0] }}
+                                </td>
+
+                                <td>
+                                    {{ record[2] }}
+                                </td>
+
+                                <td>
+                                    {{ record[3] }}
+                                </td>
+
+                                <td>
+
+                                    <span class="status present">
+                                        <i class="fa-solid fa-check"></i>
+                                        Present
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="5">
+
+                                    <div class="empty-state">
+
+                                        <i class="fa-solid fa-calendar-xmark"></i>
+
+                                        <h3>No attendance yet</h3>
+
+                                        <p>
+                                            Start face recognition to mark attendance.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

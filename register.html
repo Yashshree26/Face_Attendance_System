@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register Student - FaceAttend</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fa-solid fa-face-smile"></i>
+            </div>
+
+            <div>
+                <h2>FaceAttend</h2>
+                <span>Smart Attendance</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <a href="/" class="nav-link">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/register" class="nav-link active">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Register Student</span>
+            </a>
+
+            <a href="/attendance" class="nav-link">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="/students" class="nav-link">
+                <i class="fa-solid fa-users"></i>
+                <span>Students</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                System Online
+            </div>
+
+            <div class="version">
+                FaceAttend v1.0
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Register Student</h1>
+                <p>Add a student and capture their face data.</p>
+            </div>
+
+
+        </header>
+
+
+        <!-- REGISTER CONTENT -->
+
+        <div class="register-layout">
+
+            <!-- LEFT INFO -->
+
+            <div class="card register-info">
+
+                <div class="register-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+
+                <h2>New Student</h2>
+
+                <p>
+                    Register a student before capturing their face.
+                    The captured images will be used to recognize
+                    the student during attendance.
+                </p>
+
+                <div class="steps">
+
+                    <div class="step active">
+
+                        <div class="step-number">1</div>
+
+                        <div>
+                            <strong>Enter Details</strong>
+                            <span>Student ID and name</span>
+                        </div>
+
+                    </div>
+
+                    <div class="step-line"></div>
+
+                    <div class="step">
+
+                        <div class="step-number">2</div>
+
+                        <div>
+                            <strong>Capture Face</strong>
+                            <span>Take face images</span>
+                        </div>
+
+                    </div>
+
+                    <div class="step-line"></div>
+
+                    <div class="step">
+
+                        <div class="step-number">3</div>
+
+                        <div>
+                            <strong>Train Model</strong>
+                            <span>Update recognition model</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <div class="card register-form-card">
+
+                <div class="card-title">
+
+                    <div>
+                        <h2>Student Information</h2>
+                        <p>Enter the student's basic details.</p>
+                    </div>
+
+                    <i class="fa-solid fa-id-card"></i>
+
+                </div>
+
+
+                <form action="/register" method="POST">
+
+                    <div class="form-group">
+
+                        <label>
+                            <i class="fa-solid fa-hashtag"></i>
+                            Student ID
+                        </label>
+
+                        <input
+                            type="number"
+                            name="student_id"
+                            placeholder="Enter student ID"
+                            required
+                        >
+
+                        <small>
+                            Example: 101
+                        </small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            <i class="fa-solid fa-user"></i>
+                            Student Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                        <small>
+                            Enter student's full name
+                        </small>
+
+                    </div>
+
+
+                    <div class="form-info">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        <span>
+                            After registration, you will be able
+                            to capture the student's face using
+                            your webcam.
+                        </span>
+
+                    </div>
+
+
+                    <button type="submit" class="btn primary full-btn">
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                        Register & Continue
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- CAMERA INSTRUCTIONS -->
+
+        <div class="card instruction-card">
+
+            <div class="instruction-icon">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+
+            <div>
+
+                <h3>Face Capture Tips</h3>
+
+                <p>
+                    Make sure the student's face is clearly visible,
+                    the room has enough light, and the student looks
+                    directly at the camera.
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
